@@ -38,6 +38,9 @@ export async function signInWithGoogle() {
       console.error("Firebase Config:", JSON.stringify(firebaseConfig));
       throw new Error("Firebase configuration error. Please verify your Firebase configuration in Secrets.");
     }
+    if (error.code === 'auth/unauthorized-domain') {
+      throw new Error("This domain is not authorized in Firebase. Please add replit.com and .replit.dev to your Firebase Authentication authorized domains.");
+    }
     throw error;
   }
 }
