@@ -19,7 +19,7 @@ export async function getChatResponse(message: string): Promise<string> {
         { role: "user", content: message }
       ],
       temperature: 0.7,
-      max_tokens: 1000
+      max_tokens: 4000
     });
 
     return response.choices[0].message.content || "I couldn't generate a response.";

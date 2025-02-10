@@ -5,6 +5,21 @@ hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 [nix]
 channel = "stable-24_05"
 
+[env]
+OPENAI_API_KEY = "sk-proj-VLoXpRJDXe5BAYEL60IW4XXx_XUIirISxMdHUvmohLLyyY96-eQ31WwQjclL3HsEXht2MU3HyT3BlbkFJihf0MZQvWGq1wvSPJ6zhJK_GisiNs49JnZfKqrcpjqKACldnUdNXseRAmJV7Ehm3XJ71VOa60A"
+DATABASE_URL = "postgresql://neondb_owner:npg_mgt1rX4zqAeM@ep-lucky-pine-a6hfj8mr.us-west-2.aws.neon.tech/neondb?sslmode=require"
+PGDATABASE = "neondb"
+PGHOST = "ep-lucky-pine-a6hfj8mr.us-west-2.aws.neon.tech"
+PGPORT = "5432"
+PGUSER = "neondb_owner"
+PGPASSWORD = "npg_mgt1rX4zqAeM"
+VITE_FIREBASE_MESSAGING_SENDER_ID = "633343686423"
+VITE_FIREBASE_API_KEY = "AIzaSyAxh1IGiPhnude75LetDk0x7oCxhyJYtFE"
+VITE_FIREBASE_APP_ID = "1:633343686423:web:d199a421d00d29a16da952"
+VITE_FIREBASE_PROJECT_ID = "replit-project-c6cd7"
+FIREBASE_PRIVATE_KEY = "-----BEGIN PRIVATE KEY-----\\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQChSOxSTR4jurJz\\nyOyKduWqJ0bRSNDB9geMWHEq9YKN3nyqWF579zebPsjC1BPfVCuvWrRK+FuHWo1u\\ngT2yW9R9TDlxPDa4xbPTEMJuzF5VqkegHO6cFMA7B20NwPbYfN/ah3lCMg4ejr+j\\nZ2otu+cZZq25Upl/o8E3QDRZm1I5swZVVd3T16p5LNRFrdawC5Q88OBIetv2femi\\nTENhSSaBgr1bOSpsCNYdZgXfv/iCw/W0Q6MXUCEk+jipbMJlOVpox5zMBnjZtuDq\\nwPrvsfHIPQQc61T5Qhc+UmTI1/dmXkBzoxjDkZ6VMV9W1fW2UQoh/89gnL8KM8vg\\niC/5qIiBAgMBAAECggEACtg9wQWbx93p2eHiEH1mJpwgJY+2hGmSoFviCs1vSzLG\\nlyhR/ME8D/LsyjeQY9fjssAal1/pEkotxbG9qvHZxoMK6b5EFQXWIum26SmnaNiG\\nRbyBns/BDTcL8id4xvMT6jxpvuBhaqnr4No3SClLpL2ZY3irsZVv4dMuB0hrraLB\\n4s7f9FjJxoZsbtn7Xv1y4BYJJFHQiwhMWa79r4UDVfinUEWWIKtEXxzJ7KCd43Vq\\n50PcTZ5K/KJBQLccAqVTDJ4M2ngFiIqshN6P06rzsfkErodwL3D9TuGmN2CnoZQB\\nfXutUdrlqkMI3Gre3SLR8lOPYLpyTx8JNvlV5MHwQQKBgQDgc8MIj9UpW1I35ccL\\njO6CgJ2qg6imRU7kiuLw6bosroFaCQYJkeQDXhHhAowE0cLFKz1g+61SUUb09RVj\\nsHd8lTCALk/TZz+QKRqeRtsM6hyvwpdAhXcQC4eOS6qk4VPFyv13iZwDsOyzyCfV\\nVcvwEA6IbB26LRz5Q66PG/MBfQKBgQC39EY4nM+5KK/CaPqSOeqJFlsxwlNcN5pC\\nF0t1uDwByLQ+AoUsG4PhtqnUiO98ydTmrYBvaaQDGKS/Y0x7zlGH48rsaCONetHN\\nfbHc4OmtCz46qbdg+AYV2HV+DJ48n8kA4ph0Nia91eXVpippV6tXlTlyZHj0qUTQ\\nP+gj4atSVQKBgEvKi0cu2nn2nlLFwmrCEh/7MkJL5v0OVk+SHoPfSMChxIgUl/dP\\nTkFc2Ii0hXdzJWPS8Az5r1MmouFAiRJ6mj51WkVOXiIysSIK3zQnFPzNaRZojQ56\\ngvPmEMYaAuteMx2NJ/3fd9E/Qw6KPfkp2Y2cvmuOppMhfLEnC6DDfVE5AoGAQwZ/\\nO4tvaHC5saVcf0EZAsAhlDzQ8M3Vp/Ui6o6pVqERg3KZoVuZLvnGYYlPcXF84Fwh\\navbb6sDk7lM4//dJ37CRNJgxNBCnNy9wSiGtIv7wuqEyDuPwG6+WB8qDMWWq8Gaf\\n0+ATN6IjLzhvRZjK9ouJtfOD2ul+CD7wz3ofWU0CgYAQKLk9dSWDrmTal3rKJr2k\\n61pFBFqFfEofS7MCBHVL6BQNalqpS5amrLxgziJ7jdsCcusLz3qqLT2Vnp+ezi00\\nJxl0DaxsZ7ndiWMOYeBqJBMXEoCwT/oiiRE1kaxV2CzsPZ2r4axkzkxxlELQajxT\\nP35rXI4AnsiqwAYiAktw7g==\\n-----END PRIVATE KEY-----"
+
+
 [deployment]
 deploymentTarget = "cloudrun"
 build = ["npm", "run", "build"]
