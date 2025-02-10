@@ -1,33 +1,21 @@
-
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithRedirect, signOut } from "firebase/auth";
 
-const requiredEnvVars = {
-  VITE_FIREBASE_API_KEY: import.meta.env.VITE_FIREBASE_API_KEY,
-  VITE_FIREBASE_PROJECT_ID: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  VITE_FIREBASE_APP_ID: import.meta.env.VITE_FIREBASE_APP_ID,
-};
-
-// Check for missing environment variables
-const missingVars = Object.entries(requiredEnvVars)
-  .filter(([_, value]) => !value)
-  .map(([key]) => key);
-
-if (missingVars.length > 0) {
-  throw new Error(
-    `Missing Firebase configuration. Please set these environment variables: ${missingVars.join(", ")}`
-  );
-}
+// Log environment variables (for debugging)
+console.log("API Key exists:", !!import.meta.env.VITE_FIREBASE_API_KEY);
+console.log("Project ID exists:", !!import.meta.env.VITE_FIREBASE_PROJECT_ID);
+console.log("App ID exists:", !!import.meta.env.VITE_FIREBASE_APP_ID);
 
 const firebaseConfig = {
-  apiKey: requiredEnvVars.VITE_FIREBASE_API_KEY,
-  authDomain: `${requiredEnvVars.VITE_FIREBASE_PROJECT_ID}.firebaseapp.com`,
-  projectId: requiredEnvVars.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: `${requiredEnvVars.VITE_FIREBASE_PROJECT_ID}.appspot.com`,
-  messagingSenderId: requiredEnvVars.VITE_FIREBASE_PROJECT_ID.split('-')[1] || "",
-  appId: requiredEnvVars.VITE_FIREBASE_APP_ID,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebaseapp.com`,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.appspot.com`,
+  messagingSenderId: "",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
@@ -38,7 +26,8 @@ export async function signInWithGoogle() {
   } catch (error: any) {
     console.error("Error signing in with Google:", error);
     if (error.code === 'auth/configuration-not-found') {
-      throw new Error("Firebase configuration error. Please check your Firebase setup and environment variables.");
+      console.error("Firebase Config:", JSON.stringify(firebaseConfig));
+      throw new Error("Firebase configuration error. Please verify your Firebase configuration in Secrets.");
     }
     throw error;
   }
