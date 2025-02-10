@@ -14,16 +14,16 @@ const firebaseConfig = {
   authDomain: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebaseapp.com`,
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
   storageBucket: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.appspot.com`,
-  messagingSenderId: "633343686423",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_APP_ID?.split(":")[1] || "",
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 // Validate config
-for (const [key, value] of Object.entries(firebaseConfig)) {
+Object.entries(firebaseConfig).forEach(([key, value]) => {
   if (!value) {
     console.error(`Missing Firebase config: ${key}`);
   }
-}
+});
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -33,6 +33,9 @@ const provider = new GoogleAuthProvider();
 export async function signInWithGoogle() {
   try {
     console.log("Starting Google sign-in process");
+    // Clear any existing auth state
+    await signOut(auth);
+
     // Force account selection and disable one-tap sign-in
     provider.setCustomParameters({
       prompt: 'select_account',
@@ -44,6 +47,7 @@ export async function signInWithGoogle() {
   } catch (error: any) {
     console.error("Error in signInWithGoogle:", error);
 
+    // Add detailed error logging
     if (error.code === 'auth/configuration-not-found') {
       console.error("Firebase Config:", {
         ...firebaseConfig,

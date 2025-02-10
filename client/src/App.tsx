@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import Chat from "@/pages/chat";
 import Welcome from "@/pages/welcome";
+import Verify from "@/pages/verify";
 import NotFound from "@/pages/not-found";
 import { auth } from "@/lib/firebase";
 import { useEffect, useState } from "react";
@@ -18,13 +19,13 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
     console.log("Setting up auth state listener");
     const unsubscribe = auth.onAuthStateChanged((user) => {
       console.log("Auth state changed:", user ? "User logged in" : "No user");
-      if (!user) {
+      if (!user || !user.emailVerified) {
         toast({
           variant: "destructive",
           title: "Authentication Required",
-          description: "Please sign in to access this page",
+          description: user ? "Please verify your email first" : "Please sign in to access this page",
         });
-        setLocation("/");
+        setLocation(user ? "/verify" : "/");
       }
       setIsLoading(false);
     });
@@ -43,7 +44,7 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
     );
   }
 
-  if (!auth.currentUser) {
+  if (!auth.currentUser?.emailVerified) {
     return null;
   }
 
@@ -52,16 +53,18 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
 
 function Router() {
   const [location] = useLocation();
-  const { toast } = useToast();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       console.log("Global auth state changed:", user ? "User logged in" : "No user");
       console.log("Current location:", location);
 
-      if (user && location === "/") {
-        console.log("Redirecting to chat because user is logged in");
-        window.location.href = "/chat";
+      if (user) {
+        if (user.emailVerified && location === "/") {
+          window.location.href = "/chat";
+        } else if (!user.emailVerified && !location.includes("/verify")) {
+          window.location.href = "/verify";
+        }
       }
     });
 
@@ -71,6 +74,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Welcome} />
+      <Route path="/verify" component={Verify} />
       <Route path="/chat">
         <ProtectedRoute component={Chat} />
       </Route>
