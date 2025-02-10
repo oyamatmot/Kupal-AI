@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithRedirect, signOut } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 
 // Log environment variables (for debugging)
 console.log("Firebase Config Check:", {
@@ -36,14 +36,18 @@ export async function signInWithGoogle() {
     // Clear any existing auth state
     await signOut(auth);
 
-    // Force account selection and disable one-tap sign-in
-    provider.setCustomParameters({
-      prompt: 'select_account',
-      auth_type: 'reauthenticate'
-    });
+    // Use signInWithPopup instead of redirect for better error handling
+    const result = await signInWithPopup(auth, provider);
+    console.log("Sign-in successful:", result.user.email);
 
-    await signInWithRedirect(auth, provider);
-    console.log("Sign-in redirect initiated");
+    // Send email verification if not verified
+    if (!result.user.emailVerified) {
+      await result.user.sendEmailVerification({
+        url: window.location.origin + '/verify',
+      });
+    }
+
+    return result.user;
   } catch (error: any) {
     console.error("Error in signInWithGoogle:", error);
 
@@ -53,7 +57,11 @@ export async function signInWithGoogle() {
         ...firebaseConfig,
         apiKey: '[REDACTED]'
       });
-      throw new Error("Firebase configuration error. Please verify your Firebase settings and authorized domains.");
+      throw new Error("Firebase configuration error. Please check if you've added the domain to authorized domains in Firebase console.");
+    }
+
+    if (error.code === 'auth/popup-blocked') {
+      throw new Error("Pop-up was blocked by your browser. Please allow pop-ups for this site.");
     }
 
     if (error.code === 'auth/unauthorized-domain') {
@@ -70,7 +78,6 @@ export async function signOutUser() {
     console.log("Starting sign-out process");
     await signOut(auth);
     console.log("User signed out successfully");
-    // Force reload to clear any cached state
     window.location.href = "/";
   } catch (error) {
     console.error("Error signing out:", error);
@@ -81,6 +88,9 @@ export async function signOutUser() {
 // Set up auth state listener for debugging
 auth.onAuthStateChanged((user) => {
   console.log("Auth state changed:", user ? `User ${user.email} logged in` : "No user");
+  if (user) {
+    console.log("Email verified:", user.emailVerified);
+  }
 });
 
 export { auth };

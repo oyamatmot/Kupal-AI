@@ -12,7 +12,11 @@ export default function Welcome() {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        setLocation('/chat');
+        if (user.emailVerified) {
+          setLocation('/chat');
+        } else {
+          setLocation('/verify');
+        }
       }
     });
     return () => unsubscribe();
@@ -20,12 +24,20 @@ export default function Welcome() {
 
   const handleSignIn = async () => {
     try {
-      await signInWithGoogle();
+      const user = await signInWithGoogle();
+      if (user && !user.emailVerified) {
+        toast({
+          title: "Verification Required",
+          description: "Please check your email for a verification link.",
+        });
+        setLocation('/verify');
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Authentication Error",
         description: error.message || "Failed to sign in with Google",
+        duration: 5000,
       });
     }
   };
