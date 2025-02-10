@@ -31,6 +31,10 @@ const provider = new GoogleAuthProvider();
 
 export async function signInWithGoogle() {
   try {
+    // Force the auth provider to select account every time
+    provider.setCustomParameters({
+      prompt: 'select_account'
+    });
     await signInWithRedirect(auth, provider);
   } catch (error: any) {
     console.error("Error signing in with Google:", error);
@@ -39,7 +43,8 @@ export async function signInWithGoogle() {
       throw new Error("Firebase configuration error. Please verify your Firebase configuration in Secrets.");
     }
     if (error.code === 'auth/unauthorized-domain') {
-      throw new Error("This domain is not authorized in Firebase. Please add replit.com and .replit.dev to your Firebase Authentication authorized domains.");
+      const domain = window.location.hostname;
+      throw new Error(`Domain ${domain} is not authorized. Add ${domain} to Firebase Console -> Authentication -> Settings -> Authorized domains`);
     }
     throw error;
   }
