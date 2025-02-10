@@ -2,9 +2,12 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithRedirect, signOut } from "firebase/auth";
 
 // Log environment variables (for debugging)
-console.log("API Key exists:", !!import.meta.env.VITE_FIREBASE_API_KEY);
-console.log("Project ID exists:", !!import.meta.env.VITE_FIREBASE_PROJECT_ID);
-console.log("App ID exists:", !!import.meta.env.VITE_FIREBASE_APP_ID);
+console.log("Firebase Config Check:", {
+  apiKeyExists: !!import.meta.env.VITE_FIREBASE_API_KEY,
+  projectIdExists: !!import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  appIdExists: !!import.meta.env.VITE_FIREBASE_APP_ID,
+  currentDomain: window.location.hostname
+});
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -16,12 +19,10 @@ const firebaseConfig = {
 };
 
 // Validate config
-if (!firebaseConfig.apiKey || !firebaseConfig.projectId || !firebaseConfig.appId) {
-  console.error("Missing required Firebase configuration. Please check your environment variables:", {
-    apiKey: !!firebaseConfig.apiKey,
-    projectId: !!firebaseConfig.projectId,
-    appId: !!firebaseConfig.appId
-  });
+for (const [key, value] of Object.entries(firebaseConfig)) {
+  if (!value) {
+    console.error(`Missing Firebase config: ${key}`);
+  }
 }
 
 // Initialize Firebase
@@ -31,32 +32,51 @@ const provider = new GoogleAuthProvider();
 
 export async function signInWithGoogle() {
   try {
-    // Force the auth provider to select account every time
+    console.log("Starting Google sign-in process");
+    // Force account selection and disable one-tap sign-in
     provider.setCustomParameters({
-      prompt: 'select_account'
+      prompt: 'select_account',
+      auth_type: 'reauthenticate'
     });
+
     await signInWithRedirect(auth, provider);
+    console.log("Sign-in redirect initiated");
   } catch (error: any) {
-    console.error("Error signing in with Google:", error);
+    console.error("Error in signInWithGoogle:", error);
+
     if (error.code === 'auth/configuration-not-found') {
-      console.error("Firebase Config:", JSON.stringify(firebaseConfig));
-      throw new Error("Firebase configuration error. Please verify your Firebase configuration in Secrets.");
+      console.error("Firebase Config:", {
+        ...firebaseConfig,
+        apiKey: '[REDACTED]'
+      });
+      throw new Error("Firebase configuration error. Please verify your Firebase settings and authorized domains.");
     }
+
     if (error.code === 'auth/unauthorized-domain') {
       const domain = window.location.hostname;
-      throw new Error(`Domain ${domain} is not authorized. Add ${domain} to Firebase Console -> Authentication -> Settings -> Authorized domains`);
+      throw new Error(`Domain ${domain} is not authorized. Please add it to Firebase Console > Authentication > Settings > Authorized domains`);
     }
+
     throw error;
   }
 }
 
 export async function signOutUser() {
   try {
+    console.log("Starting sign-out process");
     await signOut(auth);
+    console.log("User signed out successfully");
+    // Force reload to clear any cached state
+    window.location.href = "/";
   } catch (error) {
     console.error("Error signing out:", error);
     throw error;
   }
 }
+
+// Set up auth state listener for debugging
+auth.onAuthStateChanged((user) => {
+  console.log("Auth state changed:", user ? `User ${user.email} logged in` : "No user");
+});
 
 export { auth };
