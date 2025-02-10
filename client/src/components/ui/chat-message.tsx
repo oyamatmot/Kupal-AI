@@ -3,8 +3,57 @@ import { cn } from "@/lib/utils";
 import { Avatar } from "./avatar";
 import { Card } from "./card";
 
+import { useState } from 'react';
+import { Button } from './button';
+import { ThumbsUp, ThumbsDown, Star, Heart } from 'lucide-react';
+import { Message } from '@shared/schema';
+
 interface ChatMessageProps {
   message: Message;
+}
+
+export function ChatMessage({ message }: ChatMessageProps) {
+  const [reactions, setReactions] = useState<{[key: string]: number}>({
+    like: 0,
+    dislike: 0,
+    star: 0,
+    heart: 0
+  });
+
+  const handleReaction = (type: string) => {
+    setReactions(prev => ({
+      ...prev,
+      [type]: prev[type] + 1
+    }));
+  };
+
+  return (
+    <div id={`message-${message.id}`} className="mb-4">
+      <div className={`p-4 rounded-lg ${
+        message.role === 'user' ? 'bg-blue-100 ml-12' : 'bg-gray-100 mr-12'
+      }`}>
+        <div className="text-gray-800">{message.content}</div>
+        <div className="flex gap-2 mt-2">
+          <Button variant="ghost" size="sm" onClick={() => handleReaction('like')}>
+            <ThumbsUp className="h-4 w-4 mr-1" />
+            {reactions.like}
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => handleReaction('dislike')}>
+            <ThumbsDown className="h-4 w-4 mr-1" />
+            {reactions.dislike}
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => handleReaction('star')}>
+            <Star className="h-4 w-4 mr-1" />
+            {reactions.star}
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => handleReaction('heart')}>
+            <Heart className="h-4 w-4 mr-1" />
+            {reactions.heart}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 type Reaction = '👍' | '❤️' | '😄' | '🤔' | '👏';
