@@ -18,7 +18,9 @@ export const messages = pgTable("messages", {
   role: text("role", { enum: ["user", "assistant"] }).notNull(),
   timestamp: timestamp("timestamp").defaultNow().notNull(),
   conversationId: integer("conversation_id").references(() => conversations.id),
-  metadata: json("metadata")
+  metadata: json("metadata"),
+  parentId: integer("parent_id").references(() => messages.id),
+  threadCount: integer("thread_count").default(0)
 });
 
 export const insertConversationSchema = createInsertSchema(conversations).pick({

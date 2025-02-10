@@ -10,9 +10,11 @@ import { Message } from '@shared/schema';
 
 interface ChatMessageProps {
   message: Message;
+  onReply?: (parentId: number) => void;
 }
 
-export function ChatMessage({ message }: ChatMessageProps) {
+export function ChatMessage({ message, onReply }: ChatMessageProps) {
+  const [showThread, setShowThread] = useState(false);
   const [reactions, setReactions] = useState<{[key: string]: number}>({
     like: 0,
     dislike: 0,
@@ -50,7 +52,22 @@ export function ChatMessage({ message }: ChatMessageProps) {
             <Heart className="h-4 w-4 mr-1" />
             {reactions.heart}
           </Button>
+          <Button variant="ghost" size="sm" onClick={() => onReply?.(message.id)}>
+            <MessageSquare className="h-4 w-4 mr-1" />
+            Reply
+          </Button>
+          {message.threadCount > 0 && (
+            <Button variant="ghost" size="sm" onClick={() => setShowThread(!showThread)}>
+              <ArrowRight className={`h-4 w-4 mr-1 transform ${showThread ? 'rotate-90' : ''}`} />
+              {message.threadCount} replies
+            </Button>
+          )}
         </div>
+        {showThread && message.threadCount > 0 && (
+          <div className="ml-8 mt-2 border-l-2 pl-4">
+            <ThreadMessages parentId={message.id} />
+          </div>
+        )}
       </div>
     </div>
   );

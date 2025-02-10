@@ -5,12 +5,20 @@ interface Preferences {
   theme: 'light' | 'dark';
   fontSize: 'small' | 'medium' | 'large';
   messageDisplay: 'compact' | 'comfortable';
+  soundEnabled: boolean;
+  desktopNotifications: boolean;
+  threadCollapsed: boolean;
+  mentionNotifications: boolean;
 }
 
 const defaultPreferences: Preferences = {
   theme: 'light',
   fontSize: 'medium',
-  messageDisplay: 'comfortable'
+  messageDisplay: 'comfortable',
+  soundEnabled: true,
+  desktopNotifications: true,
+  threadCollapsed: false,
+  mentionNotifications: true
 };
 
 export function usePreferences() {

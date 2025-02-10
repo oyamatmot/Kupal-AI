@@ -75,6 +75,46 @@ export function PreferencesDialog({
               </SelectContent>
             </Select>
           </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label className="text-right">Sound</Label>
+            <Switch
+              checked={preferences.soundEnabled}
+              onCheckedChange={(checked) =>
+                setPreferences({ ...preferences, soundEnabled: checked })
+              }
+              className="col-span-3"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label className="text-right">Desktop Notifications</Label>
+            <Switch
+              checked={preferences.desktopNotifications}
+              onCheckedChange={(checked) =>
+                setPreferences({ ...preferences, desktopNotifications: checked })
+              }
+              className="col-span-3"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label className="text-right">Collapse Threads</Label>
+            <Switch
+              checked={preferences.threadCollapsed}
+              onCheckedChange={(checked) =>
+                setPreferences({ ...preferences, threadCollapsed: checked })
+              }
+              className="col-span-3"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label className="text-right">Mention Notifications</Label>
+            <Switch
+              checked={preferences.mentionNotifications}
+              onCheckedChange={(checked) =>
+                setPreferences({ ...preferences, mentionNotifications: checked })
+              }
+              className="col-span-3"
+            />
+          </div>
         </div>
       </DialogContent>
     </Dialog>
